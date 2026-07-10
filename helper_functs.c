@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/19 16:01:40 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/06/19 18:51:01 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/08 18:06:16 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,6 @@ int ft_strlen(const char *s)
     return (i);
 }
 
-char	to_lowercase(char c)
-{
-	if (c >= 'A' && c <= 'Z')
-		return (c + 32);
-	return (c);
-}
-
 int is_number(const char *s)
 {
     int i = 0;
@@ -37,6 +30,7 @@ int is_number(const char *s)
     if (!s || !s[0])
         return 0;
 
+    /* Only allow optional leading sign for compatibility, but numbers should be positive */
     if (s[i] == '+' || s[i] == '-')
         i++;
 
@@ -73,19 +67,4 @@ loong_t	ft_atol(const char *nptr)
 		nptr++;
 	}
 	return (numb * sign);
-}
-
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	int	i;
-
-	i = 0;
-	while (s1[i] || s2[i])
-	{
-		if (to_lowercase(s1[i]) != to_lowercase(s2[i]))
-			return ((unsigned char)to_lowercase(s1[i])
-				- (unsigned char)to_lowercase(s2[i]));
-		i++;
-	}
-	return (0);
 }
