@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 23:58:02 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/08 18:09:32 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/10 18:59:14 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 
 int	main(int argc, char **argv)
 {
-	t_args	*data;
+    // data is a holder of all the data in my program
+	t_data *data = malloc(sizeof(t_data));
 
+    // strat by parsing and storing on the data->args
 	if (argc != 9)
 	{
 		printf("Usage: ./codexion number_of_coders time_to_burnout time_to_compile "
@@ -24,17 +26,12 @@ int	main(int argc, char **argv)
 			"dongle_cooldown scheduler\n");
 		return (0);
 	}
-	check_args(argv);
-	data = parser(argc, argv);
-	if (!data)
-	{
-		printf("ERROR: Memory allocation failed\n");
-		return (0);
-	}
-    // arguments parsed and ready in data
-	init(data);
-    free(data->dongles);
-    pthread_mutex_destroy(&data->print_mutex);
-    free(data);
+	data->args = parser(argc, argv);
+
+    // arguments parsed and ready in data->args
+    // now we need to initialize the other data
+    init(data);
+    printf("%llu",data->args->number_of_coders);
+    
 	return (0);
 }

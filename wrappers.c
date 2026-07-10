@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   wrappers.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/08 17:05:59 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/10 18:58:34 by wkerdad          ###   ########.fr       */
+/*   Created: 2026/07/10 18:49:24 by wkerdad           #+#    #+#             */
+/*   Updated: 2026/07/10 18:54:57 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"codexion.h"
 
-
-void    init(t_data *data)
+void *safe_malloc(size_t size)
 {
-    data->end_sum = false;
-    data->coders = safe_malloc(sizeof(t_coder) * data->args->number_of_coders);
+    void *holder;
     
-    
+    holder = malloc(size);
+    if (holder == NULL)
+    {
+        printf("malloc ERROR");
+        exit(0);
+    }
+    return (holder);
 }
