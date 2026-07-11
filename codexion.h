@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 00:30:31 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/10 18:55:11 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/11 20:42:30 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,29 @@
 # include <limits.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <errno.h>
 
 # define loong_t unsigned long long
 
+typedef enum s_move
+{
+    CREATE,
+    JOIN,
+    LOCK,
+    UNLOCK,
+    INIT,
+    DESTROY
+}       t_move;
+
 typedef struct s_args
 {
-    loong_t number_of_coders;
-    loong_t time_to_burnout;
-    loong_t time_to_compile;
-    loong_t time_to_debug;
-    loong_t time_to_refactor;
-    loong_t number_of_compiles_required;
-    loong_t dongle_cooldown;
+    int number_of_coders;
+    int time_to_burnout;
+    int time_to_compile;
+    int time_to_debug;
+    int time_to_refactor;
+    int number_of_compiles_required;
+    int dongle_cooldown;
     char *scheduler;
 
 }			t_args;
@@ -41,19 +52,20 @@ typedef struct s_dongle
 {
     pthread_mutex_t dongle;
     int dongle_id;
-    loong_t status;
+    int status;
     pthread_cond_t cond;
 }           t_dongle;
 
 typedef struct s_coder
 {
-    int coder_id;
-    loong_t compile_counter;
+    int coder_id; // coder if
+    int compile_counter; // how many compiles is done
+    bool is_done; // does the compiles needed is done
+    t_dongle *left_hand;
+    t_dongle *right_hand;
     // B.S
     loong_t last_compile;
     int status;
-    t_dongle *left_hand;
-    t_dongle *right_hand;
 }           t_coder;
 
 typedef struct s_data
@@ -81,6 +93,8 @@ t_args *parser(int argc, char **args);
 void    init(t_data	*data);
 
 // wrappers
-void *safe_malloc(size_t size);
+void    *safe_malloc(size_t size);
+void    safe_pthread(t_move move, pthread_t *th, void *(* holder)(void *));
+void    safe_mutex(t_move move, pthread_mutex_t *mx);
 
 # endif

@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 23:58:02 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/10 18:59:14 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/11 20:46:48 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char **argv)
     // arguments parsed and ready in data->args
     // now we need to initialize the other data
     init(data);
-    printf("%llu",data->args->number_of_coders);
+
     
 	return (0);
 }
