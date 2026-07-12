@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 00:30:31 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/11 20:42:30 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/12 17:52:35 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@
 # include <pthread.h>
 # include <errno.h>
 
-# define loong_t unsigned long long
+#define SUCCESS 1
+#define FAILED 0
+
+typedef unsigned long long loong_t;
 
 typedef enum s_move
 {
@@ -32,7 +35,13 @@ typedef enum s_move
     LOCK,
     UNLOCK,
     INIT,
-    DESTROY
+    DESTROY,
+    COMPILE,
+    DEBUG,
+    REFACTOR,
+    WAITING,
+    COOLDOWN,
+    READY
 }       t_move;
 
 typedef struct s_args
@@ -52,20 +61,20 @@ typedef struct s_dongle
 {
     pthread_mutex_t dongle;
     int dongle_id;
-    int status;
-    pthread_cond_t cond;
+    t_move status;
 }           t_dongle;
 
 typedef struct s_coder
 {
-    int coder_id; // coder if
+    int coder_id; // coder id
     int compile_counter; // how many compiles is done
     bool is_done; // does the compiles needed is done
     t_dongle *left_hand;
     t_dongle *right_hand;
+    pthread_t thread_id;
+    t_move status;
     // B.S
     loong_t last_compile;
-    int status;
 }           t_coder;
 
 typedef struct s_data
@@ -75,6 +84,7 @@ typedef struct s_data
     t_coder *coders;
     loong_t timer;
     bool end_sum;
+    bool all_thread_ready; // to sync coders
     // B.S
     pthread_t *threads;
     int simulation_running;
@@ -90,11 +100,11 @@ int is_number(const char *s);
 t_args *parser(int argc, char **args);
 
 // initializer
-void    init(t_data	*data);
+int    init(t_data	*data);
 
 // wrappers
 void    *safe_malloc(size_t size);
-void    safe_pthread(t_move move, pthread_t *th, void *(* holder)(void *));
-void    safe_mutex(t_move move, pthread_mutex_t *mx);
+int    safe_pthread(t_move move, pthread_t *th, void *(* holder)(void *), void *data);
+int    safe_mutex(t_move move, pthread_mutex_t *mx);
 
 # endif

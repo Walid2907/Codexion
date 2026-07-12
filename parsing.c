@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 00:16:53 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/10 18:59:00 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/12 15:17:11 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,41 +31,43 @@ static void parse_args(int argc, char **argv, t_args *args)
 }
 
 // the scheduler checker
-static void	check_scheduler(char *arg)
+static int	check_scheduler(char *arg)
 {
     if (strcmp(arg, "fifo") != 0 && strcmp(arg, "edf") != 0)
 	{
         printf("ERROR: scheduler must be 'fifo' or 'edf'\n");
-		exit(1);
+		return(FAILED);
 	}
+    return(SUCCESS);
 }
 // helper for the check_args function just for norms
-static void check_args_help(loong_t num, int i)
+static int check_args_help(loong_t num, int i)
 {
     if (num > INT_MAX)
     {
         printf("ERROR: only integers are allowed\n");
-        exit(1);
+        return(FAILED);
     }
-    if (i == 1 && num < 1)
+    if (i == 1 && num <= 1)
     {
-        printf("ERROR: number_of_coders must be >= 1\n");
-        exit(1);
+        printf("ERROR: number_of_coders must be > 1\n");
+        return(FAILED);
     }
     if (i >= 2 && i <= 5 && num == 0)
     {
         printf("ERROR: time values must be > 0\n");
-        exit(1);
+        return(FAILED);
     }
     if (i == 6 && num < 1)
     {
         printf("ERROR: number_of_compiles_required must be >= 1\n");
-        exit(1);
+        return(FAILED);
     }
+    return(SUCCESS);
 }
 // function to check if the args is is valid 
 // before working with them
-static void	check_args(char **argv)
+static int	check_args(char **argv)
 {
     int		i;
 	loong_t	num;
@@ -76,27 +78,32 @@ static void	check_args(char **argv)
         if (!is_number(argv[i]))
 		{
             printf("ERROR: invalid number\n");
-			exit(1);
+			return(FAILED);
 		}
 		/* input starting with - is rejected */
 		if (argv[i][0] == '-')
 		{
             printf("ERROR: negative numbers are not allowed\n");
-			exit(1);
+			return(FAILED);
 		}
 		num = ft_atol(argv[i]);
-        check_args_help(num, i);
+        if (check_args_help(num, i) == FAILED)
+            return(FAILED);
 		i++;
 	}
-	check_scheduler(argv[8]);
+	if (check_scheduler(argv[8]) == FAILED)
+        return(FAILED);
+    return(SUCCESS);
 }
 
 t_args *parser(int argc, char **argv)
 {
     t_args *args;
 
-    check_args(argv);
+    if (check_args(argv) == FAILED)
+        return (NULL);
     args = safe_malloc(sizeof(t_args));
     parse_args(argc, argv, args);
+    
     return (args);
 }
