@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 00:30:31 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/12 17:52:35 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/12 18:51:52 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #define FAILED 0
 
 typedef unsigned long long loong_t;
+typedef struct s_data t_data;
+
 
 typedef enum s_move
 {
@@ -73,12 +75,14 @@ typedef struct s_coder
     t_dongle *right_hand;
     pthread_t thread_id;
     t_move status;
+    t_data *data;
     // B.S
     loong_t last_compile;
 }           t_coder;
 
 typedef struct s_data
 {
+    pthread_mutex_t data_mutex;
     t_args *args;
     t_dongle *dongles;
     t_coder *coders;
@@ -88,7 +92,6 @@ typedef struct s_data
     // B.S
     pthread_t *threads;
     int simulation_running;
-    pthread_mutex_t state_mutex;
 }           t_data;
 
 
@@ -106,5 +109,18 @@ int    init(t_data	*data);
 void    *safe_malloc(size_t size);
 int    safe_pthread(t_move move, pthread_t *th, void *(* holder)(void *), void *data);
 int    safe_mutex(t_move move, pthread_mutex_t *mx);
+
+// Setters and Getters
+int    set_bool(pthread_mutex_t *mx, bool *to_set, bool value);
+bool    get_bool(pthread_mutex_t *mx, bool *value);
+int    set_int(pthread_mutex_t *mx, int *to_set, int value);
+int    get_int(pthread_mutex_t *mx, int *value);
+bool sim_finished(t_data *data);
+
+//synchro function
+void    wait_threads(t_data *data);
+
+// simulation
+int    simulation_start(t_data *data);
 
 # endif

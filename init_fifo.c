@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/08 17:05:59 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/12 17:51:51 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/12 19:03:01 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ static void coder_init(t_data *data)
         data->coders[i].coder_id = i + 1;
         data->coders[i].compile_counter = 0;
         data->coders[i].is_done = false;
+        data->coders[i].data = data;
         data->coders[i].status = WAITING;
         coders_hand_init(data, i);
         printf("-%d:", data->coders[i].coder_id);
@@ -47,7 +48,7 @@ static void coder_init(t_data *data)
 }
 
 
-void    init(t_data *data)
+int    init(t_data *data)
 {
     int i;
     
@@ -65,5 +66,7 @@ void    init(t_data *data)
         i++;
     }
     coder_init(data);
+    simulation_start(data);
+    return (SUCCESS);
     
 }

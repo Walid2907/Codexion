@@ -6,7 +6,7 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/10 18:49:24 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/12 15:50:15 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/12 18:43:07 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,18 @@ static int wrapp_mutex_error(int status, t_move move)
 {
     if (0 == status)
         return (SUCCESS);
-    // if (EINVAL == status && (LOCK == move || UNLOCK == move || DESTROY == move))
-    //     printf("The value specified by mutex is invalid.");
-    // else if (EINVAL == status && INIT == move)
-    //     printf("The value specified by attr is invalid.");
-    // else if (EDEADLK == status)
-    //     printf("A deadlock would occur if the thread blocked waiting for mutex.");
-    // else if (EPERM == status)
-    //     printf("The current thread does not hold a lock on mutex.");
-    // else if (ENOMEM == status)
-    //     printf("The process cannot allocate enough memory to create another mutex.");
-    // else if (EBUSY == status)
-    //     printf("Mutex is locked");
+    if (EINVAL == status && (LOCK == move || UNLOCK == move || DESTROY == move))
+        printf("The value specified by mutex is invalid.");
+    else if (EINVAL == status && INIT == move)
+        printf("The value specified by attr is invalid.");
+    else if (EDEADLK == status)
+        printf("A deadlock would occur if the thread blocked waiting for mutex.");
+    else if (EPERM == status)
+        printf("The current thread does not hold a lock on mutex.");
+    else if (ENOMEM == status)
+        printf("The process cannot allocate enough memory to create another mutex.");
+    else if (EBUSY == status)
+        printf("Mutex is locked");
     return (FAILED);
 }
 
@@ -36,18 +36,18 @@ static int wrapp_thread_error(int status, t_move move)
 {
     if (0 == status)
         return (SUCCESS);
-    // if (EAGAIN == status)
-    //     printf("No resources to create another thread");
-    // else if (EPERM == status)
-    //     printf("The caller does not have appropriate permission\n");
-    // else if (EINVAL == status && CREATE == move)
-    //     printf("The value specified by attr is invalid.");
-    // else if (EINVAL == status && (JOIN == move))
-    //     printf("The value specified by thread is not joinable\n");
-    // else if (ESRCH == status)
-    //     printf("No thread could be found corresponding to that" "specified by the given thread ID, thread.");
-    // else if (EDEADLK == status)
-    //     printf("A deadlock was detected or the value of" "thread specifies the calling thread.");
+    if (EAGAIN == status)
+        printf("No resources to create another thread");
+    else if (EPERM == status)
+        printf("The caller does not have appropriate permission\n");
+    else if (EINVAL == status && CREATE == move)
+        printf("The value specified by attr is invalid.");
+    else if (EINVAL == status && (JOIN == move))
+        printf("The value specified by thread is not joinable\n");
+    else if (ESRCH == status)
+        printf("No thread could be found corresponding to that" "specified by the given thread ID, thread.");
+    else if (EDEADLK == status)
+        printf("A deadlock was detected or the value of" "thread specifies the calling thread.");
     return (FAILED);
 }
 
