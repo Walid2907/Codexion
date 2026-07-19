@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/26 00:16:53 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/12 15:17:11 by wkerdad          ###   ########.fr       */
+/*   Created: 2026/07/13 21:20:50 by wkerdad           #+#    #+#             */
+/*   Updated: 2026/07/13 21:53:21 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static void parse_args(int argc, char **argv, t_args *args)
+
+/*
+function that fills my args sturct after checking 
+that all the args are valide and safe to use
+*/
+static int parse_args(int argc, char **argv, t_args *args)
 {
     if (argc != 9)
     {
         printf("ERROR: Expected 9 arguments, got %d\n", argc);
-        exit(1);
+        return (FAILED);
     }
     // !! usleep work with microsecond (x * 1000)
     args->number_of_coders = ft_atol(argv[1]);
@@ -27,7 +32,11 @@ static void parse_args(int argc, char **argv, t_args *args)
     args->time_to_refactor = ft_atol(argv[5]);
     args->number_of_compiles_required = ft_atol(argv[6]);
     args->dongle_cooldown = ft_atol(argv[7]);
-    args->scheduler = argv[8];
+    if (strcmp(argv[8], "fifo") == 0)
+        args->scheduler = FIFO;
+    else
+        args->scheduler = EDF;
+    return (SUCCESS);
 }
 
 // the scheduler checker
@@ -36,41 +45,48 @@ static int	check_scheduler(char *arg)
     if (strcmp(arg, "fifo") != 0 && strcmp(arg, "edf") != 0)
 	{
         printf("ERROR: scheduler must be 'fifo' or 'edf'\n");
-		return(FAILED);
+		return (FAILED);
 	}
-    return(SUCCESS);
+    return (SUCCESS);
 }
-// helper for the check_args function just for norms
-static int check_args_help(loong_t num, int i)
+
+/*
+helper for the check_args function that helps with sanitaizing
+the giving args to only take the valide ones
+*/
+static int check_args_help(ull_t num, int i)
 {
     if (num > INT_MAX)
     {
         printf("ERROR: only integers are allowed\n");
-        return(FAILED);
+        return (FAILED);
     }
-    if (i == 1 && num <= 1)
+    if (i == 1 && num < 1)
     {
-        printf("ERROR: number_of_coders must be > 1\n");
-        return(FAILED);
+        printf("ERROR: number_of_coders must be >= 1\n");
+        return (FAILED);
     }
     if (i >= 2 && i <= 5 && num == 0)
     {
         printf("ERROR: time values must be > 0\n");
-        return(FAILED);
+        return (FAILED);
     }
     if (i == 6 && num < 1)
     {
         printf("ERROR: number_of_compiles_required must be >= 1\n");
-        return(FAILED);
+        return (FAILED);
     }
-    return(SUCCESS);
+    return (SUCCESS);
 }
-// function to check if the args is is valid 
-// before working with them
+
+/*
+function to check if the args is is valid 
+before working with them
+*/
 static int	check_args(char **argv)
 {
     int		i;
-	loong_t	num;
+	ull_t	num;
     
 	i = 1;
 	while (i < 8)
@@ -78,32 +94,40 @@ static int	check_args(char **argv)
         if (!is_number(argv[i]))
 		{
             printf("ERROR: invalid number\n");
-			return(FAILED);
+			return (FAILED);
 		}
 		/* input starting with - is rejected */
 		if (argv[i][0] == '-')
 		{
             printf("ERROR: negative numbers are not allowed\n");
-			return(FAILED);
+			return (FAILED);
 		}
 		num = ft_atol(argv[i]);
         if (check_args_help(num, i) == FAILED)
-            return(FAILED);
+            return (FAILED);
 		i++;
 	}
 	if (check_scheduler(argv[8]) == FAILED)
-        return(FAILED);
-    return(SUCCESS);
+        return (FAILED);
+    return (SUCCESS);
 }
 
+// the main parsing wrapper
 t_args *parser(int argc, char **argv)
 {
     t_args *args;
-
+    // check if the arguments are valid if NOT return NULL
     if (check_args(argv) == FAILED)
         return (NULL);
+    // if yes allocate , fill and return the args
     args = safe_malloc(sizeof(t_args));
-    parse_args(argc, argv, args);
-    
+    if (args == NULL)
+        return (NULL);
+
+    if (parse_args(argc, argv, args) == FAILED)
+    {
+        free(args);
+        return (NULL);
+    }
     return (args);
 }
