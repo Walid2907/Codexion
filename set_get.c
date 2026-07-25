@@ -6,56 +6,54 @@
 /*   By: wkerdad <wkerdad@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 01:13:33 by wkerdad           #+#    #+#             */
-/*   Updated: 2026/07/15 15:22:56 by wkerdad          ###   ########.fr       */
+/*   Updated: 2026/07/21 15:30:18 by wkerdad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-
-bool get_bool(pthread_mutex_t *mutex, bool *var)
+// safe setters and getters
+// to prevent raceconditions
+bool	get_bool(pthread_mutex_t *mutex, bool *var)
 {
-    bool value;
+	bool	value;
 
-    safe_mutex(LOCK, mutex);
-    value = *var;
-    safe_mutex(UNLOCK, mutex);
-    return (value);
+	safe_mutex(LOCK, mutex);
+	value = *var;
+	safe_mutex(UNLOCK, mutex);
+	return (value);
 }
 
-void set_bool(pthread_mutex_t *mutex, bool *var, bool value)
+void	set_bool(pthread_mutex_t *mutex, bool *var, bool value)
 {
-    safe_mutex(LOCK, mutex);
-    *var = value;
-    safe_mutex(UNLOCK, mutex);
+	safe_mutex(LOCK, mutex);
+	*var = value;
+	safe_mutex(UNLOCK, mutex);
 }
 
-int get_int(pthread_mutex_t *mutex, int *var)
+int	get_int(pthread_mutex_t *mutex, int *var)
 {
-    int value;
+	int	value;
 
-    safe_mutex(LOCK, mutex);
-    value = *var;
-    safe_mutex(UNLOCK, mutex);
-    return (value);
+	safe_mutex(LOCK, mutex);
+	value = *var;
+	safe_mutex(UNLOCK, mutex);
+	return (value);
 }
 
-ull_t get_long(pthread_mutex_t *mutex, ull_t *var)
+t_ull	get_long(pthread_mutex_t *mutex, t_ull *var)
 {
-    ull_t value;
+	t_ull	value;
 
-    safe_mutex(LOCK, mutex);
-    value = *var;
-    safe_mutex(UNLOCK, mutex);
-    return (value);
+	safe_mutex(LOCK, mutex);
+	value = *var;
+	safe_mutex(UNLOCK, mutex);
+	return (value);
 }
 
-void set_long(pthread_mutex_t *mutex, ull_t *var, ull_t value)
+void	set_long(pthread_mutex_t *mutex, t_ull *var, t_ull value)
 {
-    safe_mutex(LOCK, mutex);
-    *var = value;
-    safe_mutex(UNLOCK, mutex);
+	safe_mutex(LOCK, mutex);
+	*var = value;
+	safe_mutex(UNLOCK, mutex);
 }
-
-
-

@@ -13,7 +13,8 @@ SRCS = main.c \
 	   set_get.c \
 	   time.c \
 	   compile.c \
-	   queue.c
+	   queue.c \
+	   utils2.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
